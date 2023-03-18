@@ -1,0 +1,159 @@
+{
+    "os": "Linux-5.4.0-139-generic-x86_64-with-glibc2.31",
+    "python": "3.9.12",
+    "heartbeatAt": "2023-03-08T22:16:42.659560",
+    "startedAt": "2023-03-08T22:16:42.567080",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--dataroot",
+        "./datasets/bird/",
+        "--direction",
+        "BtoA",
+        "--model",
+        "pix2pix",
+        "--name",
+        "edges2shoes_pretrained",
+        "--use_wandb"
+    ],
+    "state": "running",
+    "program": "/home/aditya_sharma/281/pytorch-CycleGAN-and-pix2pix/test.py",
+    "codePath": "test.py",
+    "git": {
+        "remote": "https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix",
+        "commit": "da39a525eb793614807db4330cfe9b2157bbe33a"
+    },
+    "email": "adityasharma1709@gmail.com",
+    "root": "/home/aditya_sharma/281/pytorch-CycleGAN-and-pix2pix",
+    "host": "mllab01",
+    "username": "aditya_sharma",
+    "executable": "/opt/miniconda3/bin/python",
+    "cpu_count": 10,
+    "cpu_count_logical": 20,
+    "cpu_freq": {
+        "current": 2021.52605,
+        "min": 1200.0,
+        "max": 4700.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 1214.488,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.036,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.086,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.029,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 2614.321,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.03,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.003,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 3806.667,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 2192.099,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 4370.297,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1214.258,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.094,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.086,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1201.309,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 2470.804,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.354,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 1200.333,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 4132.362,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 2112.574,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 4300.291,
+            "min": 1200.0,
+            "max": 4700.0
+        }
+    ],
+    "disk": {
+        "total": 455.94214630126953,
+        "used": 125.23389053344727
+    },
+    "gpu": "NVIDIA RTX A4000",
+    "gpu_count": 2,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA RTX A4000",
+            "memory_total": 17171480576
+        },
+        {
+            "name": "NVIDIA RTX A4000",
+            "memory_total": 17171480576
+        }
+    ],
+    "memory": {
+        "total": 62.50190734863281
+    }
+}
