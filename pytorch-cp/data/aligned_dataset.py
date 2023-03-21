@@ -51,7 +51,7 @@ class AlignedDataset(BaseDataset):
         upper = [3,5,6,7,10,11,14,15]
         lower = [6,9,10,12,16,17]
         feet = [8,18,19]
-        mask = cv2.cvtColor(cv2.imread('../../../lip_masks_gray/1276362.png'), cv2.COLOR_BGR2GRAY)
+        mask = cv2.cvtColor(cv2.imread('lip_masks_gray/1276362.png'), cv2.COLOR_BGR2GRAY)
         mask = cv2.resize(mask, (500, 500))
         
 
