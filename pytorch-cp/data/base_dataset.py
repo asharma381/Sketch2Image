@@ -78,7 +78,7 @@ def get_params(opt, size):
     return {'crop_pos': (x, y), 'flip': flip}
 
 
-def get_transform(opt, params=None, grayscale=False, method=transforms.InterpolationMode.BICUBIC, convert=True):
+def get_transform(opt, params=None, grayscale=False, method=transforms.InterpolationMode.BICUBIC, convert=True, already_tensor=False, n_channels=3):
     transform_list = []
     if grayscale:
         transform_list.append(transforms.Grayscale(1))
@@ -104,14 +104,15 @@ def get_transform(opt, params=None, grayscale=False, method=transforms.Interpola
             transform_list.append(transforms.Lambda(lambda img: __flip(img, params['flip'])))
 
     if convert:
-        transform_list += [transforms.ToTensor()]
+        if not already_tensor:
+            transform_list += [transforms.ToTensor()]
         if grayscale:
             transform_list += [transforms.Normalize((0.5,), (0.5,))]
         else:
-            transform_list += [transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
+            transform_list += [transforms.Normalize(tuple(0.5 for i in range(n_channels)), tuple(0.5 for i in range(n_channels)))]
     return transforms.Compose(transform_list)
 
-
+import torch
 def __transforms2pil_resize(method):
     mapper = {transforms.InterpolationMode.BILINEAR: Image.BILINEAR,
               transforms.InterpolationMode.BICUBIC: Image.BICUBIC,
@@ -122,7 +123,10 @@ def __transforms2pil_resize(method):
 
 def __make_power_2(img, base, method=transforms.InterpolationMode.BICUBIC):
     method = __transforms2pil_resize(method)
-    ow, oh = img.size
+    if isinstance(img, torch.Tensor):
+        ow, oh = img.size()[:2]
+    else:
+        ow, oh = img.size
     h = int(round(oh / base) * base)
     w = int(round(ow / base) * base)
     if h == oh and w == ow:
@@ -134,7 +138,10 @@ def __make_power_2(img, base, method=transforms.InterpolationMode.BICUBIC):
 
 def __scale_width(img, target_size, crop_size, method=transforms.InterpolationMode.BICUBIC):
     method = __transforms2pil_resize(method)
-    ow, oh = img.size
+    if isinstance(img, torch.Tensor):
+        ow, oh = img.size()[:2]
+    else:
+        ow, oh = img.size
     if ow == target_size and oh >= crop_size:
         return img
     w = target_size
@@ -143,17 +150,23 @@ def __scale_width(img, target_size, crop_size, method=transforms.InterpolationMo
 
 
 def __crop(img, pos, size):
-    ow, oh = img.size
+    from torchvision.transforms.functional import crop
+    if isinstance(img, torch.Tensor):
+        ow, oh = img.size()[:2]
+    else:
+        ow, oh = img.size
     x1, y1 = pos
     tw = th = size
     if (ow > tw or oh > th):
-        return img.crop((x1, y1, x1 + tw, y1 + th))
+        return crop(img, y1, x1, th, tw)
     return img
 
 
 def __flip(img, flip):
     if flip:
-        return img.transpose(Image.FLIP_LEFT_RIGHT)
+        from torchvision.transforms.functional import hflip
+
+        return hflip(img)
     return img
 
 

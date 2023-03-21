@@ -2,7 +2,9 @@ import os
 from data.base_dataset import BaseDataset, get_params, get_transform
 from data.image_folder import make_dataset
 from PIL import Image
-
+import numpy as np
+import cv2
+import torch
 
 class AlignedDataset(BaseDataset):
     """A dataset class for paired image dataset.
@@ -43,12 +45,29 @@ class AlignedDataset(BaseDataset):
         w, h = AB.size
         w2 = int(w / 2)
         A = AB.crop((0, 0, w2, h))
-        B = AB.crop((w2, 0, w, h))
+        B = AB.crop((w2, 0, w, h)).convert("L")
+
+        head = [1,2,4,13]
+        upper = [3,5,6,7,10,11,14,15]
+        lower = [6,9,10,12,16,17]
+        feet = [8,18,19]
+        mask = cv2.cvtColor(cv2.imread('../../../lip_masks_gray/1276362.png'), cv2.COLOR_BGR2GRAY)
+        mask = cv2.resize(mask, (500, 500))
+        
+
+        img_and_mask = np.zeros((w2, h, 5))
+        img_and_mask[:,:,0] = B
+        img_and_mask[:,:,1] = np.isin(mask, head)
+        img_and_mask[:,:,2] = np.isin(mask, upper)
+        img_and_mask[:,:,3] = np.isin(mask, lower)
+        img_and_mask[:,:,4] = np.isin(mask, feet)
+        img_and_mask = img_and_mask.transpose((2,0,1)).astype(np.float32)
 
         # apply the same transform to both A and B
         transform_params = get_params(self.opt, A.size)
+        B = torch.tensor(img_and_mask)
         A_transform = get_transform(self.opt, transform_params, grayscale=(self.input_nc == 1))
-        B_transform = get_transform(self.opt, transform_params, grayscale=(self.output_nc == 1))
+        B_transform = get_transform(self.opt, transform_params, grayscale=(self.output_nc == 1), already_tensor=True, n_channels=5)
 
         A = A_transform(A)
         B = B_transform(B)

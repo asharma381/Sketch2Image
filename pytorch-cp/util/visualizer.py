@@ -39,6 +39,9 @@ def save_images(webpage, visuals, image_path, aspect_ratio=1.0, width=256, use_w
     ims_dict = {}
     for label, im_data in visuals.items():
         im = util.tensor2im(im_data)
+        if label == "real_A":
+            im = im_data.cpu().numpy()[0,:,:,:]
+            im = im.transpose([1,2,0])[:,:,:1]
         image_name = '%s_%s.png' % (name, label)
         save_path = os.path.join(image_dir, image_name)
         util.save_image(im, save_path, aspect_ratio=aspect_ratio)
@@ -138,7 +141,8 @@ class Visualizer():
                 for label, image in visuals.items():
                     image_numpy = util.tensor2im(image)
                     label_html_row += '<td>%s</td>' % label
-                    images.append(image_numpy.transpose([2, 0, 1]))
+                    n_channels = 1 if image_numpy.shape[0] == 4 else 3
+                    images.append(image_numpy.transpose([2, 0, 1])[:n_channels,:,:])
                     idx += 1
                     if idx % ncols == 0:
                         label_html += '<tr>%s</tr>' % label_html_row
@@ -164,7 +168,8 @@ class Visualizer():
                 try:
                     for label, image in visuals.items():
                         image_numpy = util.tensor2im(image)
-                        self.vis.image(image_numpy.transpose([2, 0, 1]), opts=dict(title=label),
+                        n_channels = 1 if image_numpy.shape[0] == 4 else 3
+                        self.vis.image(image_numpy.transpose([2, 0, 1])[:n_channels,:,:], opts=dict(title=label),
                                        win=self.display_id + idx)
                         idx += 1
                 except VisdomExceptionBase:
@@ -178,6 +183,8 @@ class Visualizer():
             ims_dict = {}
             for label, image in visuals.items():
                 image_numpy = util.tensor2im(image)
+                n_channels = 1 if image_numpy.shape[0] == 4 else 3
+                image_numpy = image_numpy[:,:,:n_channels]
                 wandb_image = wandb.Image(image_numpy)
                 table_row.append(wandb_image)
                 ims_dict[label] = wandb_image
@@ -192,6 +199,10 @@ class Visualizer():
             # save images to the disk
             for label, image in visuals.items():
                 image_numpy = util.tensor2im(image)
+                if label == "real_A":
+                    image_numpy = image.cpu().numpy()[0,:,:,:]
+                    image_numpy = image_numpy.transpose([1,2,0])[:,:,:1]
+
                 img_path = os.path.join(self.img_dir, 'epoch%.3d_%s.png' % (epoch, label))
                 util.save_image(image_numpy, img_path)
 
@@ -203,6 +214,8 @@ class Visualizer():
 
                 for label, image_numpy in visuals.items():
                     image_numpy = util.tensor2im(image)
+                    n_channels = 1 if image_numpy.shape[0] == 4 else 3
+                    image_numpy = image_numpy[:,:,:n_channels]
                     img_path = 'epoch%.3d_%s.png' % (n, label)
                     ims.append(img_path)
                     txts.append(label)
